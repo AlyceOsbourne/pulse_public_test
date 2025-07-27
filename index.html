@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pulse - Loading</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* ===== COLOR PALETTE ===== */
+            /* Background Colors */
+            --bg-primary: #000000;
+            --bg-secondary: #0a0a0a;
+            --bg-tertiary: #111111;
+            
+            /* Enhanced Bisexual Pride Colors */
+            --accent-primary: #ff1493;    /* Deep Pink - More vibrant */
+            --accent-secondary: #9932cc;  /* Dark Orchid - Richer purple */
+            --accent-tertiary: #4169e1;   /* Royal Blue - More saturated */
+            --accent-quaternary: #8a2be2; /* Blue Violet - Enhanced */
+            --accent-quinary: #ff69b4;    /* Hot Pink - Additional accent */
+            --accent-senary: #9370db;     /* Medium Slate Blue - Complementary */
+            
+            /* Text Colors */
+            --text-primary: #ffffff;
+            --text-secondary: #e2e8f0;
+            --text-muted: #64748b;
+            
+            /* Status Colors */
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            
+            /* Border Colors */
+            --border-color: #1e293b;
+            --border-accent: var(--accent-primary);
+            
+            /* ===== GLASSMORPHISM ===== */
+            --glass-opacity: 0.08;
+            --glass-border-opacity: 0.15;
+            --glass-strong-opacity: 0.12;
+            --glass: rgba(255, 20, 147, var(--glass-opacity));
+            --glass-border: rgba(255, 20, 147, var(--glass-border-opacity));
+            --glass-strong: rgba(255, 20, 147, var(--glass-strong-opacity));
+            
+            /* ===== SHADOWS ===== */
+            --shadow-opacity-sm: 0.12;
+            --shadow-opacity-md: 0.18;
+            --shadow-opacity-lg: 0.22;
+            --shadow-opacity-xl: 0.28;
+            --shadow-opacity-neon: 0.35;
+            --shadow-opacity-neon-strong: 0.5;
+            
+            --shadow-sm: 0 2px 4px 0 rgba(255, 20, 147, var(--shadow-opacity-sm));
+            --shadow-md: 0 8px 16px -4px rgba(255, 20, 147, var(--shadow-opacity-md));
+            --shadow-lg: 0 20px 25px -5px rgba(255, 20, 147, var(--shadow-opacity-lg));
+            --shadow-xl: 0 25px 50px -12px rgba(255, 20, 147, var(--shadow-opacity-xl));
+            --shadow-neon: 0 0 20px rgba(255, 20, 147, var(--shadow-opacity-neon));
+            --shadow-neon-strong: 0 0 30px rgba(255, 20, 147, var(--shadow-opacity-neon-strong));
+            
+            /* ===== SPACING ===== */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 20px;
+            --spacing-xl: 24px;
+            --spacing-2xl: 32px;
+            --spacing-3xl: 40px;
+            
+            /* ===== BORDER RADIUS ===== */
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-2xl: 20px;
+            --radius-full: 50%;
+            
+            /* ===== FONT SIZES ===== */
+            --text-xs: 10px;
+            --text-sm: 12px;
+            --text-base: 14px;
+            --text-lg: 16px;
+            --text-xl: 18px;
+            --text-2xl: 20px;
+            --text-3xl: 24px;
+            --text-4xl: 28px;
+            
+            /* ===== FONT WEIGHTS ===== */
+            --font-light: 300;
+            --font-normal: 400;
+            --font-medium: 500;
+            --font-semibold: 600;
+            --font-bold: 700;
+            --font-extrabold: 800;
+            --font-black: 900;
+            
+            /* ===== TRANSITIONS ===== */
+            --transition-fast: 0.2s ease;
+            --transition-normal: 0.3s ease;
+            --transition-slow: 0.5s ease;
+            
+            /* ===== BLUR EFFECTS ===== */
+            --blur-sm: 10px;
+            --blur-md: 20px;
+            --blur-lg: 30px;
+            --blur-xl: 40px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loading-content {
+            text-align: center;
+            color: var(--text-primary);
+        }
+
+        .loading-logo {
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 40px;
+            color: var(--accent-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .loading-logo .logo-svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 0 15px rgba(214, 2, 112, 0.4));
+        }
+
+        .loading-logo .pulse-circle {
+            animation: pulse 2s infinite;
+            filter: drop-shadow(0 0 8px rgba(214, 2, 112, 0.5));
+        }
+
+        .loading-logo .pulse-wave {
+            animation: wave 3s infinite;
+            transform-origin: center;
+            stroke: var(--accent-primary);
+            filter: drop-shadow(0 0 4px rgba(214, 2, 112, 0.4));
+        }
+
+        .loading-text {
+            font-family: 'Orbitron', monospace;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 40px;
+            letter-spacing: 0.1em;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: textGlow 2s ease-in-out infinite alternate;
+        }
+
+        .status-text {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.05em;
+            margin-top: 20px;
+        }
+
+        .retry-button {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border: none;
+            border-radius: var(--radius-md);
+            color: white;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all var(--transition-normal);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .retry-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-neon);
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes wave {
+            0% {
+                transform: scale(0.8);
+                opacity: 0.7;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0.4;
+            }
+            100% {
+                transform: scale(1.6);
+                opacity: 0;
+            }
+        }
+
+        @keyframes textGlow {
+            0% { filter: drop-shadow(0 0 5px rgba(214, 2, 112, 0.3)); }
+            100% { filter: drop-shadow(0 0 15px rgba(214, 2, 112, 0.6)); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .loading-content {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .loading-logo {
+                width: 120px;
+                height: 120px;
+                margin-bottom: 30px;
+            }
+            
+            .loading-text {
+                font-size: 18px;
+                margin-bottom: 30px;
+            }
+            
+            .status-text {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .loading-logo {
+                width: 100px;
+                height: 100px;
+                margin-bottom: 25px;
+            }
+            
+            .loading-text {
+                font-size: 16px;
+                margin-bottom: 25px;
+            }
+            
+            .status-text {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-content">
+            <div class="loading-logo">
+                <svg class="logo-svg" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Central pulse circle -->
+                    <circle class="pulse-circle" cx="24" cy="24" r="6" fill="white" opacity="0.9"/>
+                    
+                    <!-- Expanding wave rings -->
+                    <circle class="pulse-wave" cx="24" cy="24" r="8" stroke="white" stroke-width="1.5" fill="none" opacity="0.6"/>
+                    <circle class="pulse-wave" cx="24" cy="24" r="12" stroke="white" stroke-width="1" fill="none" opacity="0.4" style="animation-delay: 0.5s"/>
+                    <circle class="pulse-wave" cx="24" cy="24" r="16" stroke="white" stroke-width="0.8" fill="none" opacity="0.2" style="animation-delay: 1s"/>
+                    <circle class="pulse-wave" cx="24" cy="24" r="20" stroke="white" stroke-width="0.6" fill="none" opacity="0.1" style="animation-delay: 1.5s"/>
+                    
+                    <!-- Connection dots -->
+                    <circle cx="12" cy="12" r="1.5" fill="white" opacity="0.7"/>
+                    <circle cx="36" cy="12" r="1.5" fill="white" opacity="0.7"/>
+                    <circle cx="12" cy="36" r="1.5" fill="white" opacity="0.7"/>
+                    <circle cx="36" cy="36" r="1.5" fill="white" opacity="0.7"/>
+                    
+                    <!-- Connection lines -->
+                    <line x1="13.5" y1="13.5" x2="34.5" y2="13.5" stroke="white" stroke-width="0.8" opacity="0.4"/>
+                    <line x1="13.5" y1="34.5" x2="34.5" y2="34.5" stroke="white" stroke-width="0.8" opacity="0.4"/>
+                    <line x1="13.5" y1="13.5" x2="13.5" y2="34.5" stroke="white" stroke-width="0.8" opacity="0.4"/>
+                    <line x1="34.5" y1="13.5" x2="34.5" y2="34.5" stroke="white" stroke-width="0.8" opacity="0.4"/>
+                    
+                    <!-- Futuristic elements -->
+                    <polygon points="24,6 27,12 24,18 21,12" fill="white" opacity="0.6" class="tech-element"/>
+                    <polygon points="24,30 27,36 24,42 21,36" fill="white" opacity="0.6" class="tech-element"/>
+                    <polygon points="6,24 12,27 18,24 12,21" fill="white" opacity="0.6" class="tech-element"/>
+                    <polygon points="30,24 36,27 42,24 36,21" fill="white" opacity="0.6" class="tech-element"/>
+                </svg>
+            </div>
+            <div class="loading-text">INITIALIZING PULSE</div>
+            <div class="status-text" id="statusText">Checking server availability...</div>
+            <button class="retry-button" id="retryButton" style="display: none;" onclick="checkServerAvailability()">Retry Connection</button>
+        </div>
+    </div>
+
+    <script>
+        const TARGET_URL = 'https://pulse-99jw.onrender.com/';
+        const CHECK_INTERVAL = 5000; // Check every 5 seconds
+        const MAX_RETRIES = 12; // Maximum 1 minute of checking
+        
+        let retryCount = 0;
+        let checkInterval;
+        
+        function updateStatus(message) {
+            const statusText = document.getElementById('statusText');
+            statusText.textContent = message;
+        }
+        
+        function showRetryButton() {
+            const retryButton = document.getElementById('retryButton');
+            retryButton.style.display = 'inline-block';
+        }
+        
+        function hideRetryButton() {
+            const retryButton = document.getElementById('retryButton');
+            retryButton.style.display = 'none';
+        }
+        
+        function checkServerAvailability() {
+            hideRetryButton();
+            retryCount = 0;
+            updateStatus('Checking server availability...');
+            
+            // Start the checking process
+            performCheck();
+        }
+        
+        function performCheck() {
+            retryCount++;
+            
+            if (retryCount > MAX_RETRIES) {
+                updateStatus('Server is currently unavailable. Please try again later.');
+                showRetryButton();
+                return;
+            }
+            
+            updateStatus(`Attempting to connect... (${retryCount}/${MAX_RETRIES})`);
+            
+            // Create a hidden iframe to test the connection
+            const testFrame = document.createElement('iframe');
+            testFrame.style.display = 'none';
+            testFrame.src = TARGET_URL;
+            
+            let timeoutId;
+            
+            testFrame.onload = function() {
+                clearTimeout(timeoutId);
+                document.body.removeChild(testFrame);
+                
+                // Success! Redirect to the main app
+                updateStatus('Connection successful! Redirecting...');
+                setTimeout(() => {
+                    window.location.href = TARGET_URL;
+                }, 1000);
+            };
+            
+            testFrame.onerror = function() {
+                clearTimeout(timeoutId);
+                document.body.removeChild(testFrame);
+                
+                // Try alternative method with fetch
+                fetch(TARGET_URL, { 
+                    method: 'HEAD',
+                    mode: 'no-cors'
+                })
+                .then(() => {
+                    // Success! Redirect to the main app
+                    updateStatus('Connection successful! Redirecting...');
+                    setTimeout(() => {
+                        window.location.href = TARGET_URL;
+                    }, 1000);
+                })
+                .catch(() => {
+                    // Still failed, schedule next check
+                    setTimeout(performCheck, CHECK_INTERVAL);
+                });
+            };
+            
+            // Set a timeout in case the iframe doesn't load
+            timeoutId = setTimeout(() => {
+                if (document.body.contains(testFrame)) {
+                    document.body.removeChild(testFrame);
+                }
+                
+                // Try alternative method with fetch
+                fetch(TARGET_URL, { 
+                    method: 'HEAD',
+                    mode: 'no-cors'
+                })
+                .then(() => {
+                    // Success! Redirect to the main app
+                    updateStatus('Connection successful! Redirecting...');
+                    setTimeout(() => {
+                        window.location.href = TARGET_URL;
+                    }, 1000);
+                })
+                .catch(() => {
+                    // Still failed, schedule next check
+                    setTimeout(performCheck, CHECK_INTERVAL);
+                });
+            }, 3000);
+            
+            document.body.appendChild(testFrame);
+        }
+        
+        // Start checking when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initial delay to show the loading screen
+            setTimeout(() => {
+                checkServerAvailability();
+            }, 1000);
+        });
+        
+        // Also try to redirect immediately if the server is already available
+        window.addEventListener('load', function() {
+            // Quick check on page load
+            fetch(TARGET_URL, { 
+                method: 'HEAD',
+                mode: 'no-cors'
+            })
+            .then(() => {
+                updateStatus('Connection successful! Redirecting...');
+                setTimeout(() => {
+                    window.location.href = TARGET_URL;
+                }, 1000);
+            })
+            .catch(() => {
+                // Server not available, continue with normal checking process
+            });
+        });
+    </script>
+</body>
+</html> 
